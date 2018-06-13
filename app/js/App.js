@@ -10,13 +10,12 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      cakes: getAllCakes(this)
-    };
   }
 
 
   componentWillMount() {
+    getAllCakes();
+    window.onpopstate = getAllCakes()
   }
 
   componentDidMount() {
@@ -26,16 +25,18 @@ class App extends React.Component {
   }
 
   render() {
-    if (_.isUndefined(this.state.cakes)) {
+    if (_.isUndefined(localStorage.getItem('data'))) {
       return <div>Loading...</div>;
     } else {
-    const cakesToShow = this.state.cakes.map((cake, index) =>
-    <div className="cakeCard" key={index}>
+    console.log(localStorage.getItem('data'))
+    const cakesToShow = JSON.parse(localStorage.getItem('data')).map((cake, index) =>
+    <div className="cakeCard" key={cake.id} onClick={() => this.props.history.push(`/edit/${cake.id}`)}>
       <img className="cakeImage" src={cake.imageUrl} />
       <div className="cakeName">{cake.name}</div>
     </div>);
     return (
       <div>
+        <div className='newLinkWrapper'><a href="/new" className="newLink" >Add new cake!</a></div>
         {cakesToShow}
       </div>
     );
